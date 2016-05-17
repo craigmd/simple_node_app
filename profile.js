@@ -8,7 +8,7 @@ class Profile extends EventEmitter {
     this._username = username;
   }
 
-  makeRequest() {
+  makeRequest(cb) {
     const options = {
       host: 'teamtreehouse.com',
       path: `/${this._username}.json`,
@@ -24,7 +24,16 @@ class Profile extends EventEmitter {
       });
 
       response.on('end', () => {
-        this.emit('end', JSON.parse(body));
+        try {
+          let profile = JSON.parse(body);
+          cb(null, profile);
+        } catch (error) {
+          cb(error, {});
+        }
+      });
+
+      response.on('error', (error) => {
+        cb(error, {});
       });
     }
 
