@@ -28,12 +28,12 @@ class Profile extends EventEmitter {
           let profile = JSON.parse(body);
           cb(null, profile);
         } catch (error) {
-          cb(error, {});
+          cb(error, '');
         }
       });
 
       response.on('error', (error) => {
-        cb(error, {});
+        cb(error, '');
       });
     }
 

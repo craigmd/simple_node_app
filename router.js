@@ -1,4 +1,5 @@
 const Profile = require("./profile.js");
+const renderer = require('./renderer.js');
 
 //Handle HTTP route GET / and POST / i.e. Home
 function home(request, response) {
@@ -6,9 +7,10 @@ function home(request, response) {
   if(request.url === "/") {
     //show search
     response.writeHead(200, {'Content-Type': 'text/plain'});
-    response.write("Header\n");
-    response.write("Search\n");
-    response.end('Footer\n');
+    renderer.view('header', {}, response);
+    renderer.view('search', {}, response);
+    renderer.view('footer', {}, response);
+    response.end()
   }
   //if url == "/" && POST
     //redirect to /:username
@@ -20,15 +22,15 @@ function user(request, response) {
 
   if(username.length > 0) {
     response.writeHead(200, {'Content-Type': 'text/plain'});
-    response.write("Header\n");
+    renderer.view('header', {}, response);
 
     const studentProfile = new Profile(username);
 
     studentProfile.makeRequest((error, profileJSON) => {
 
       if(error) {
-        response.write(error);
-        response.write("Search");
+        renderer.view('error', {errorMessage: error.message}, response);
+        renderer.view('search', {}, response);
       } else {
         const values = {
           avatarUrl: profileJSON.gravatar_url,
@@ -37,10 +39,11 @@ function user(request, response) {
           javascriptPoints: profileJSON.points.JavaScript
         }
 
-        response.write(values.username + " has " + values.badges + " badges\n");
+        renderer.view('profile', values, response);
       }
 
-      response.end('Footer\n');
+      renderer.view('footer', {}, response);
+      response.end();
     });
   }
 }

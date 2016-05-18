@@ -9,8 +9,3 @@ http.createServer((request, response) => {
   router.home(request, response);
   router.user(request, response);
 }).listen(1337, '127.0.0.1');
-
-
-//function that handles the reading of the files/templates and merge in values
-  //read from file/template and get a string
-    //merge values into string
