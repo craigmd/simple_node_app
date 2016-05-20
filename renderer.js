@@ -1,8 +1,17 @@
 const fs = require('fs');
 
+function mergeValues(values, content) {
+  for(const key in values){
+    content = content.replace('{{' + key + '}}', values[key]);
+  }
+
+  return content;
+}
+
 function view(templateName, values, response) {
-  //read from the remplate files
-  const fileContents = fs.readFileSync(`./views/${templateName}.html`);
+  let fileContents = fs.readFileSync(`./views/${templateName}.html`, {encoding: 'utf-8'});
+
+  fileContents = mergeValues(values, fileContents);
   response.write(fileContents);
 }
 
